@@ -27,9 +27,8 @@ export default async function Home({searchParams}: HomeProps) {
           <div className="flex flex-wrap px-8">
             {courses.map((item:any) => (
               <CourseComponent
-              key={item.id}
-              data={item}
-              />
+                key={item.id}
+                data={item} currentUser={null}              />
             ))}
           </div>
 

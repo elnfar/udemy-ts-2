@@ -15,6 +15,7 @@ export async function POST (request:Request) {
         name,
         author,
         imageSrc,
+        videoSrc,
         description,
         price
     } = body
@@ -23,6 +24,7 @@ export async function POST (request:Request) {
         data: {
             name,
             author,
+            videoSrc,
             imageSrc,
             description,
             price,

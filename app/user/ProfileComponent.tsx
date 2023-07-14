@@ -1,10 +1,10 @@
 'use client';
 
-import Link from "next/link";
 import Input from "../(components)/Inputs/Input";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { FormEvent, useState } from "react";
+import Button from "../(components)/Button";
 
 
 interface InitialStateProps {
@@ -32,6 +32,7 @@ export default function ProfileComponent({userId,name,email}:ProfileProps) {
 
     const router = useRouter()
     const [state,setState] = useState(initialState)
+    const [loading,setLoading] = useState(false)
 
 
     function handleChange(event:any) {
@@ -43,10 +44,14 @@ export default function ProfileComponent({userId,name,email}:ProfileProps) {
     const onSubmit = (event:FormEvent) => {
 
         event.preventDefault()
+        setLoading(true)
 
         axios.put(`/api/user/${userId}`,{
           ...state,
           hashedPassword:state.password
+        })
+        .then(() => {
+            setLoading(false)
         })
         .catch((err:any) => {
             throw new Error(err)
@@ -68,12 +73,8 @@ export default function ProfileComponent({userId,name,email}:ProfileProps) {
                 <Input placeholder='Name' id='name' type='text' name='name' onChange={handleChange} value={state.name}/>
                 <Input placeholder='Email' id='email' type='email' name='email' onChange={handleChange} value={state.email}/>
                 <Input placeholder='Password' id='password' type='password' name='password' onChange={handleChange} value={state.password}/>
-                <button type='submit'>Submit</button>
+                <Button type='submit' label="Update" disabled={loading}/>
                 </div>
-
-                    <div>
-                    <div>Do you have an account ? <Link href='/login'>Sign in</Link></div>
-                    </div>
                  </form>
             </div>
         </div>

@@ -28,6 +28,7 @@ model Course {
   name String
   createdAt DateTime @default(now())
   imageSrc String
+  videoSrc String
   author String
   price String
   description String

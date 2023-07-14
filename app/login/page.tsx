@@ -5,6 +5,7 @@ import Input from '../(components)/Inputs/Input'
 import {signIn} from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Button from '../(components)/Button'
 
 
 interface InitialStateProps {
@@ -20,6 +21,7 @@ const initialState:InitialStateProps = {
 export default function page() {
     const [state,setState] = useState(initialState)
     const router = useRouter();
+    const [loading,setLoading] = useState(false)
 
     function handleChange(event:ChangeEvent<HTMLInputElement>) {
         setState({...state, [event.target.name]: event.target.value})
@@ -28,14 +30,17 @@ export default function page() {
     function onSubmit(event:FormEvent) {
         event.preventDefault();
 
+        setLoading(true)
+
         signIn('credentials', {
             ...state,
             redirect:false
         })
         .then((callback) => {
             if(callback?.ok) {
-                router.refresh()
+                setLoading(false)
             }
+            router.refresh()
             if(callback?.error) {
                 throw new Error('Wrong Credentials')
             }
@@ -50,7 +55,7 @@ export default function page() {
         <Input placeholder='Email' id='email' type='email' name='email' onChange={handleChange} value={state.email}/>
         <Input placeholder='Password' id='password' type='password' name='password' onChange={handleChange} value={state.password}/>
 
-        <button type='submit'>Submit</button>
+        <Button disabled={loading} type='submit' label='Submit'/>
         </div>
 
         <div>

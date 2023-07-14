@@ -5,6 +5,7 @@ import Input from '../(components)/Inputs/Input'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Button from '../(components)/Button'
 
 
 interface InitialStateProps {
@@ -21,6 +22,7 @@ const initialState:InitialStateProps = {
 
 export default function page() {
     const [state,setState] = useState(initialState)
+    const [loading,setLoading] = useState(false)
     const router = useRouter();
 
     function handleChange(event:ChangeEvent<HTMLInputElement>) {
@@ -29,6 +31,7 @@ export default function page() {
 
     function onSubmit(event:FormEvent) {
         event.preventDefault();
+        setLoading(true)
 
         axios.post('/api/register',state)
         .then(() => {
@@ -37,7 +40,9 @@ export default function page() {
         .then(() => {
             setTimeout(() => {
                 router.push('/login')
+                setLoading(false)
             },2500)
+
         })
 
         .catch((error:any) => {
@@ -52,7 +57,7 @@ export default function page() {
         <Input placeholder='Email' id='email' type='email' name='email' onChange={handleChange} value={state.email}/>
         <Input placeholder='Password' id='password' type='password' name='password' onChange={handleChange} value={state.password}/>
 
-        <button type='submit'>Submit</button>
+        <Button type='submit' label='Submit' disabled={loading}></Button>
         </div>
 
         <div>
