@@ -7,6 +7,7 @@ import ImageUpload from "../(components)/Inputs/ImageUpload"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import {CldVideoPlayer} from 'next-cloudinary'
+import { toast } from "react-hot-toast"
 
 interface InitialValue {
   name:string,
@@ -55,28 +56,21 @@ export default function page() {
 
   const onSubmit = (e:FormEvent) => {
 
-    if (path !== PATH.VIDEOS) {
-      return onNext();
-    }
-    e.preventDefault();
     setLoading(true)
+    e.preventDefault();
 
     axios.post('/api/course', state)
     .then(() => {
+      toast.success('Course created successfully')
       router.push('/')
-      setLoading(false)
+
     })
     .catch((err) => {
       throw new Error(err)
     })
-  }
-
-  const onBack = () => {
-    setPath((value) => value - 1);
-  }
-
-  const onNext = () => {
-    setPath((value) => value + 1);
+    .finally(() => {
+      setLoading(false)
+    })
   }
 
   return (
@@ -84,7 +78,6 @@ export default function page() {
       <div className="flex flex-col h-[900px]">
         <form className="w-[600px] py-12 flex flex-col items-center gap-4" >
 
-        {path === PATH.SPECS && (
 
           <>
             <div className="w-[500px]">
@@ -98,24 +91,13 @@ export default function page() {
                 <Input big placeholder='Price' id='price' type='number' value={state.price} name='price' onChange={handleChange}/>
             </div>
           </>
-        )}
-
-
-        {path === PATH.VIDEOS && (
-          <>
-              <div className="w-[500px]">
-                <ImageUpload value={state.videoSrc} onChange={(value) => setCustomValue('videoSrc',value)}/>
-              </div>
-
-           
-        </>
-        )}
 
         </form>
 
         <Button 
         label="Next"
         onClick={onSubmit}
+        disabled={loading}
         />
       </div>
     </div>

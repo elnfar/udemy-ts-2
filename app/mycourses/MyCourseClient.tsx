@@ -5,7 +5,8 @@ import { SafeUser,safeCourse } from "../types"
 import Button from "../(components)/Button"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { FormEvent } from "react"
+import { FormEvent, useState } from "react"
+import { toast } from "react-hot-toast"
 
 interface CourseCardProps {
     data:safeCourse;
@@ -15,16 +16,22 @@ interface CourseCardProps {
 export default function MyCourseClient({data}:CourseCardProps) {
 
     const router = useRouter();
+    const [isLoading,setIsLoading] = useState(false)
 
     const onDelete = (e:FormEvent) => {
+        setIsLoading(true)
         e.preventDefault();
     
         axios.delete(`/api/course/${data.id}`)
         .then(() => {
+          toast.success("Deleted successfully")
           router.refresh();
         })
         .catch((error) => {
           throw new Error(error)
+        })
+        .finally(() => {
+          setIsLoading(false)
         })
       }
     
@@ -48,7 +55,7 @@ export default function MyCourseClient({data}:CourseCardProps) {
 
 
             <div className="w-full gap-2 flex">
-                <Button type='submit' label="Delete" onClick={onDelete}/>
+                <Button type='submit' disabled={isLoading} label="Delete" onClick={onDelete}/>
                 <Button type='button' label="View" onClick={() => router.push(`/mycourses/${data.id}`)}/>
 
             </div>

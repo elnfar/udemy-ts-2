@@ -6,6 +6,8 @@ import ImageUpload from "@/app/(components)/Inputs/ImageUpload";
 import { useRouter } from 'next/navigation'
 import axios from "axios";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { toast } from "react-hot-toast";
+import Button from "@/app/(components)/Button";
 
 
 interface CourseProps {
@@ -38,6 +40,8 @@ export default function UpdateCourseComponent({name,price,courseId,description,a
 
 
     const [state,setState] = useState(initialState)
+    const [isLoading,setIsLoading] = useState(false)
+
     const router = useRouter()
 
 
@@ -53,17 +57,23 @@ export default function UpdateCourseComponent({name,price,courseId,description,a
       };
 
       const onUpdate = (e:FormEvent) => {
+        setIsLoading(true)
         e.preventDefault();
     
         axios.put(`/api/course/${courseId}`,state)
         .then(() => {
+
+          toast.success('updated successfully')
           router.refresh();
+          router.push('/')
+
+
         })
         .catch((error) => {
           throw new Error(error)
         })
         .finally(() => {
-          router.push('/')
+          setIsLoading(false)
         })
       }
     
@@ -96,7 +106,7 @@ export default function UpdateCourseComponent({name,price,courseId,description,a
         <Input big placeholder='Price' id='price' type='number' value={state.price} name='price' onChange={handleChange}/>
         <div> 
         </div>
-        <button type='submit'>Submit</button>
+        <Button disabled={isLoading} onClick={onUpdate} type='submit' label="Submit/Update"/>
         </div>
 
         </form>
