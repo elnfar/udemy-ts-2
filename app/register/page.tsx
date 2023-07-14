@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Button from '../(components)/Button'
+import { toast } from 'react-hot-toast'
 
 
 interface InitialStateProps {
@@ -30,23 +31,27 @@ export default function page() {
     }
 
     function onSubmit(event:FormEvent) {
-        event.preventDefault();
         setLoading(true)
+        event.preventDefault();
+      
 
         axios.post('/api/register',state)
         .then(() => {
+            toast.success("Registered")
             router.refresh()
         })
         .then(() => {
             setTimeout(() => {
                 router.push('/login')
-                setLoading(false)
             },2500)
 
         })
 
         .catch((error:any) => {
             throw new Error(error)
+        })
+        .finally(() => {
+            setLoading(false)
         })
     }
 

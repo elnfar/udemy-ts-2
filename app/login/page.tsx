@@ -6,6 +6,7 @@ import {signIn} from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Button from '../(components)/Button'
+import { toast } from 'react-hot-toast'
 
 
 interface InitialStateProps {
@@ -38,15 +39,21 @@ export default function page() {
         })
         .then((callback) => {
             if(callback?.ok) {
-                setLoading(false)
+                toast.success("Logged In")
+                router.push('/');
+                router.refresh()
             }
-            router.refresh()
+            
             if(callback?.error) {
                 throw new Error('Wrong Credentials')
             }
+        }).catch((err) => {
+            throw new Error(err)
+        }).finally(() => {
+            setLoading(false)
         })
 
-        router.push('/');
+     
     }
 
   return (
